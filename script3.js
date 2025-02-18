@@ -53,8 +53,14 @@ btn.addEventListener("click",()=>{
 function takeCommand(message){
    voice.style.display="none"
     btn.style.display="flex"
-    if(message.includes("hello")||message.includes("hey")){
-        speak("hello Manish,what can i help you?")
+    if(message.includes("hello")||message.includes("hey")||message.includes("hi")||message.includes("hey ki")||message.includes("aur batao")){
+        speak("Hello Manish, how's your day going?")
+    }
+    else if(message.includes("how are you")){
+        speak("I am fine,Manish ! thank you for asking,would you like me to do something for you?")
+    }
+    else if(message.includes("yes")){
+        speak("what can i do for you?")
     }
     else if(message.includes("who are you")){
         speak("i am virtual assistant KI ,created by Manish ")
