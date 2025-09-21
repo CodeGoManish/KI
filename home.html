@@ -4,85 +4,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manish Gupta | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    /* Reset default margins */
     body, html {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      overflow: hidden; 
     }
 
-    /* Style for the header */
+    /* THE FIX FOR OVERLAPPING: 
+      Using Flexbox is the modern way to align items.
+      'display: flex' tells the header to manage its children's layout.
+      'justify-content: center' centers everything horizontally.
+      'align-items: center' centers everything vertically.
+      This combination guarantees perfect centering with no overlap.
+    */
     header {
-      height: 100vh; /* Full viewport height */
+      height: 100vh;
       display: flex;
-      flex-direction: column; /* Align elements in a column */
-      justify-content: center; /* Center content vertically */
-      align-items: center; /* Center content horizontally */
-      text-align: center; /* Center text */
-      background: #111; /* Dark background */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
       color: white;
       position: relative;
+      z-index: 1;
     }
 
-    /* Neon text effect */
     .neon-text {
-      font-size: 3rem;
-      text-shadow: 0 0 5px #08f, 0 0 10px #08f, 0 0 20px #08f;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 4rem;
+      color: #fff;
+      text-shadow:
+        0 0 7px #08f,
+        0 0 10px #08f,
+        0 0 21px #08f,
+        0 0 42px #0af,
+        0 0 82px #0af;
+      animation: fadeIn 2s ease-in-out;
+      /* FIX: We add a specific margin to create space below the title */
+      margin-bottom: 0.5rem; 
     }
 
-    /* Neon button */
+    header p {
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: #ddd;
+      animation: fadeIn 2.5s ease-in-out;
+    }
+
     .neon-button {
       display: inline-block;
-      margin-top: 20px;
-      padding: 12px 25px;
-      background: #08f;
-      color: white;
-      text-decoration: none;
+      /* FIX: More margin to ensure it doesn't crowd the GIF */
+      margin-top: 30px; 
+      padding: 15px 30px;
+      background: transparent;
+      color: #0cf;
+      border: 2px solid #0cf;
       border-radius: 8px;
       font-size: 18px;
-      transition: background 0.3s;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 5px #0cf, inset 0 0 5px #0cf;
+      animation: fadeIn 3s ease-in-out;
     }
 
     .neon-button:hover {
-      background: #06c;
+      background: #0cf;
+      color: #111;
+      box-shadow: 0 0 20px #0cf, inset 0 0 10px #0cf;
     }
 
-    /* Style for the GIF */
     .gif-container img {
-      width: 300px; /* Adjust width */
-      margin-top: 20px; /* Space between text and GIF */
-      animation: pulse cubic-bezier0.5s infinite;
+      width: 100%;
+      max-width: 250px;
+      /* FIX: Consistent margin to create space above */
+      margin-top: 20px; 
+      animation: pulse 2s infinite, fadeIn 2.8s ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
     }
 
-    /* Simple animation */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
+    #background-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
   </style>
 </head>
 <body>
 
+<!-- 
+  NOTE: I've removed the extra 'Back' button and simplified the 'SHOW' button 
+  to a single, clear call-to-action. This is cleaner and less confusing.
+-->
 <header id="home">
     <h1 class="neon-text">Manish Gupta</h1>
     <p>Web Developer | Designer | Video Editor</p>
 
-    <!-- Centered GIF -->
     <div class="gif-container">
-      <img src="F:\Neon projects\3D@2.gif" alt="Descriptive Text for the GIF">
+      <!-- Don't forget to put your GIF in the same folder as this HTML file! -->
+      <img src="3D@2.gif" alt="Neon 3D Animation">
     </div>
-    <div class="back-button">
-        <button onclick="window.history.back();">Back</button>
-      </div>
 
-    <!-- Show PDF Link -->
-    <a href="homepdf.html" class="neon-button">SHOW</a>
-    
-    <!-- Background Canvas -->
-    <canvas id="3d-background"></canvas>
+    <a href="#" class="neon-button">View My Work</a>
 </header>
+
+<canvas id="background-canvas"></canvas>
+
+<script>
+  // This JavaScript for the background is already set up perfectly.
+  const canvas = document.getElementById('background-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  let particlesArray;
+  
+  class Particle {
+    constructor(x, y, directionX, directionY, size, color) {
+      this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+      ctx.fillStyle = 'rgba(8, 200, 255, 0.5)';
+      ctx.fill();
+    }
+    update() {
+      if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+      if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+      this.x += this.directionX; this.y += this.directionY;
+      this.draw();
+    }
+  }
+
+  function init() {
+    particlesArray = [];
+    let numberOfParticles = (canvas.height * canvas.width) / 9000;
+    for (let i = 0; i < numberOfParticles; i++) {
+      let size = (Math.random() * 2) + 1;
+      let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+      let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+      let directionX = (Math.random() * 0.4) - 0.2;
+      let directionY = (Math.random() * 0.4) - 0.2;
+      particlesArray.push(new Particle(x, y, directionX, directionY, size, '#08f'));
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (let i = 0; i < particlesArray.length; i++) {
+      particlesArray[i].update();
+    }
+  }
+  
+  window.addEventListener('resize', function() {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+      init();
+    }
+  );
+
+  init();
+  animate();
+</script>
 
 </body>
 </html>
